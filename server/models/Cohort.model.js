@@ -11,23 +11,14 @@ const cohortSchema = new Schema({
   format: { type: String, enum: ["Full Time", "Part Time"] },
   campus: {
     type: String,
-    enum: [
-      "Madrid",
-      "Barcelona",
-      "Miami",
-      "Paris",
-      "Berlin",
-      "Amsterdam",
-      "Lisbon",
-      "Remote",
-    ],
+    enum: ["Madrid", "Barcelona", "Miami", "Paris", "Berlin", "Amsterdam", "Lisbon", "Remote"],
   },
   startDate: { type: Date, default: Date.now },
   endDate: Date,
   inProgress: { type: Boolean, default: false },
   programManager: { type: String, required: true },
   leadTeacher: { type: String, required: true },
-  totalHours: { type: Boolean, default: 360 },
+  totalHours: { type: Number, default: 360 },
 });
 
 const Cohort = mongoose.model("Cohort", cohortSchema);
