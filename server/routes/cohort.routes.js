@@ -3,19 +3,9 @@ const Cohort = require("../models/Cohort.model");
 const router = require("express").Router();
 
 router.post("/api/cohorts", (req, res) => {
-  Cohort.create({
-    cohortSlug: req.body.cohortSlug,
-    cohortName: req.body.cohortName,
-    program: req.body.program,
-    format: req.body.format,
-    campus: req.body.campus,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    inProgress: req.body.inProgress,
-    programManager: req.body.programManager,
-    leadTeacher: req.body.leadTeacher,
-    totalHours: req.body.totalHours,
-  })
+  Cohort.create(
+    req.body
+  )
     .then((createdCohort) => {
       console.log("Cohort created: ", createdCohort);
       res.status(201).json(createdCohort);
