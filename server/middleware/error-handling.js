@@ -7,9 +7,7 @@ function errorHandler(err, req, res, next) {
   // Check if the response was already sent, as sending a response twice for the same request will cause an error.
   if (!res.headersSent) {
     // If not, send a response with status code 500 and a generic error message
-    res
-      .status(500)
-      .json({ message: "Internal server error. Check the server console" });
+    res.status(500).json({ message: "Internal server error. Check the server console" });
   }
 }
 

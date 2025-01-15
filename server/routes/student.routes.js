@@ -26,17 +26,20 @@ router.post("/api/students", (req, res) => {
     });
 });
 
-router.get("/api/students", (req, res) => {
+router.get("/api/students", (req, res, next) => {
   Student.find({})
     .populate("cohort")
     .then((student) => {
       console.log("Found students:", student);
       res.status(200).json(student);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 });
 
-router.get("/api/students/cohort/:cohortId", (req, res) => {
+router.get("/api/students/cohort/:cohortId", (req, res, next) => {
   const cohortId = req.params.cohortId;
   Student.find({ cohort: cohortId })
     .populate("cohort")
@@ -47,12 +50,12 @@ router.get("/api/students/cohort/:cohortId", (req, res) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: "Failed to load students." });
+      next(err);
     });
 });
 
-router.get("/api/students/:studentId", (req, res) => {
+router.get("/api/students/:studentId", (req, res, next) => {
   const studentId = req.params.studentId;
-  console.log(studentId);
   Student.findById(studentId)
     .populate("cohort")
     .then((student) => {
@@ -62,10 +65,11 @@ router.get("/api/students/:studentId", (req, res) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: "Failed to load the student." });
+      next(err);
     });
 });
 
-router.put("/api/students/:studentId", (req, res) => {
+router.put("/api/students/:studentId", (req, res, next) => {
   const studentId = req.params.studentId;
   Student.findByIdAndUpdate(studentId, req.body, { new: true })
     .then((student) => {
@@ -75,10 +79,11 @@ router.put("/api/students/:studentId", (req, res) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: "Failed to update the student." });
+      next(err);
     });
 });
 
-router.delete("/api/students/:studentId", (req, res) => {
+router.delete("/api/students/:studentId", (req, res, next) => {
   const studentId = req.params.studentId;
   Student.findByIdAndDelete(studentId)
     .then((student) => {
@@ -88,6 +93,7 @@ router.delete("/api/students/:studentId", (req, res) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: "Failed to delete the student." });
+      next(err);
     });
 });
 
