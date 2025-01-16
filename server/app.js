@@ -6,6 +6,7 @@ const cors = require("cors");
 const { errorHandler, notFoundHandler } = require("./middleware/error-handling");
 const Cohort = require("./models/Cohort.model");
 const Student = require("./models/Student.model");
+const { isAuthenticated } = require("./middleware/auth.middleware");
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
@@ -52,6 +53,12 @@ app.use(studentRoutes);
 //cohort routes
 const cohortRoutes = require("./routes/cohort.routes");
 app.use(cohortRoutes);
+
+const authRoutes = require("./routes/auth.routes");
+app.use("/auth", authRoutes);
+
+const userRoutes = require("./routes/user.routes");
+app.use("/api", isAuthenticated, userRoutes);
 
 //Check the custom error handler
 // const getRejectedPromise = () => {
