@@ -6,7 +6,7 @@ const cors = require("cors");
 const { errorHandler, notFoundHandler } = require("./middleware/error-handling");
 const Cohort = require("./models/Cohort.model");
 const Student = require("./models/Student.model");
-const { isAuthenticated } = require("./middleware/auth.middleware");
+const { isAuthenticated } = require("./middleware/auth.middleware");git 
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
