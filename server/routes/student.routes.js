@@ -2,6 +2,52 @@ const Student = require("../models/Student.model.js");
 
 const router = require("express").Router();
 
+/**
+ * @swagger
+ * /api/students:
+ *   post:
+ *     summary: Create a new student
+ *     tags:
+ *       - Students
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               linkedinUrl:
+ *                 type: string
+ *               languages:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               program:
+ *                 type: string
+ *               background:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *               cohort:
+ *                 type: string
+ *               projects:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       201:
+ *         description: Student created successfully
+ *       500:
+ *         description: Failed to create the student
+ */
 router.post("/api/students", (req, res) => {
   Student.create({
     firstName: req.body.firstName,
@@ -26,6 +72,19 @@ router.post("/api/students", (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/students:
+ *   get:
+ *     summary: Retrieve all students
+ *     tags:
+ *       - Students
+ *     responses:
+ *       200:
+ *         description: List of all students
+ *       500:
+ *         description: Failed to retrieve students
+ */
 router.get("/api/students", (req, res, next) => {
   Student.find({})
     .populate("cohort")
@@ -39,6 +98,26 @@ router.get("/api/students", (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/students/cohort/{cohortId}:
+ *   get:
+ *     summary: Retrieve students by cohort ID
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - in: path
+ *         name: cohortId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the cohort
+ *     responses:
+ *       200:
+ *         description: List of students in the cohort
+ *       500:
+ *         description: Failed to retrieve students
+ */
 router.get("/api/students/cohort/:cohortId", (req, res, next) => {
   const cohortId = req.params.cohortId;
   Student.find({ cohort: cohortId })
@@ -54,6 +133,26 @@ router.get("/api/students/cohort/:cohortId", (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/students/{studentId}:
+ *   get:
+ *     summary: Retrieve a student by ID
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the student
+ *     responses:
+ *       200:
+ *         description: Student details
+ *       500:
+ *         description: Failed to retrieve the student
+ */
 router.get("/api/students/:studentId", (req, res, next) => {
   const studentId = req.params.studentId;
   Student.findById(studentId)
@@ -69,6 +168,32 @@ router.get("/api/students/:studentId", (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/students/{studentId}:
+ *   put:
+ *     summary: Update a student's details
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the student
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Student updated successfully
+ *       500:
+ *         description: Failed to update the student
+ */
 router.put("/api/students/:studentId", (req, res, next) => {
   const studentId = req.params.studentId;
   Student.findByIdAndUpdate(studentId, req.body, { new: true })
@@ -83,6 +208,26 @@ router.put("/api/students/:studentId", (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /api/students/{studentId}:
+ *   delete:
+ *     summary: Delete a student by ID
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID of the student
+ *     responses:
+ *       200:
+ *         description: Student deleted successfully
+ *       500:
+ *         description: Failed to delete the student
+ */
 router.delete("/api/students/:studentId", (req, res, next) => {
   const studentId = req.params.studentId;
   Student.findByIdAndDelete(studentId)

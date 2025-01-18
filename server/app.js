@@ -1,4 +1,7 @@
-const express = require("express");
+const express = require("express"),
+  bodyParser = require("body-parser"),
+  swaggerJsdoc = require("swagger-jsdoc"),
+  swaggerUi = require("swagger-ui-express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const PORT = 5005;
@@ -8,6 +11,7 @@ const Cohort = require("./models/Cohort.model");
 const Student = require("./models/Student.model");
 const { isAuthenticated } = require("./middleware/auth.middleware");
 require("dotenv").config();
+const helmet = require("helmet");
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
@@ -29,16 +33,38 @@ mongoose
 // MIDDLEWARE
 // Research Team - Set up CORS middleware here:
 // ...
-app.use(
-  cors({
-    origin: [FRONTEND_URL],
-  })
-);
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       useDefaults: true,
+//       directives: {
+//         "font-src": ["'self'", "external-website.com"],
+//         // allowing styles from any website
+//         "style-src": null,
+//       },
+//     },
+//     referrerPolicy: {
+//       policy: "no-referrer",
+//     },
+//     noSniff: false,
+//     xFrameOptions: { action: "sameorigin" },
+//     strictTransportSecurity: {
+//       maxAge: 31536000,
+//       includeSubDomains: false,
+//     },
+//   })
+// );
+
+app.use(
+  cors({
+    origin: [FRONTEND_URL],
+  })
+);
 
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
@@ -61,7 +87,38 @@ app.use("/auth", authRoutes);
 const userRoutes = require("./routes/user.routes");
 app.use("/api", isAuthenticated, userRoutes);
 
-//Check the custom error handler
+//add options for the swagger
+const options = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "LogRocket Express API with Swagger",
+      version: "0.1.0",
+      description:
+        "This is a simple CRUD API application made with Express and documented with Swagger",
+      license: {
+        name: "MIT",
+        url: "https://spdx.org/licenses/MIT.html",
+      },
+      contact: {
+        name: "LogRocket",
+        url: "https://logrocket.com",
+        email: "info@email.com",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:5005",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const specs = swaggerJsdoc(options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+
+// Check the custom error handler
 // const getRejectedPromise = () => {
 //   // We are intentionally rejecting the promise to simulate a failed database operation.
 //   return Promise.reject("Failed on purpose.");
